@@ -1,24 +1,24 @@
 import os
-from telegram import Update
+import logging
 from telegram.ext import Application, CommandHandler, ContextTypes
-from dotenv import load_dotenv
+from telegram import Update
 
-load_dotenv()
+# Настройка логирования
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
+# Токен бота
 TOKEN = os.getenv('TELEGRAM_TOKEN')
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        'Привет! Я бот для оценки устройств.\n'
-        'Чтобы начать оценку, нажмите /evaluate'
-    )
+    await update.message.reply_text('Привет! Я бот для оценки устройств.')
 
 def main():
-    application = Application.builder().token(TOKEN).build()
-    application.add_handler(CommandHandler("start", start))
-    
-    # Используем polling вместо webhook
-    application.run_polling()
+    logger.info("Starting bot...")
+    app = Application.builder().token(TOKEN).build()
+    app.add_handler(CommandHandler("start", start))
+    logger.info("Bot started")
+    app.run_polling()
 
 if __name__ == '__main__':
     main()
